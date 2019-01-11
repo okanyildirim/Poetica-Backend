@@ -1,0 +1,4 @@
+Spring securityi mavende import edince post requestlerimiz için yetki hatası alıyoruz.
+Securiti ise passwordleri encode etmek için kullanacaktık.
+
+bir requestten sonra olumlu sonuç için message yazdırırsak client tarafında bu işlem hata döndürmüş gibi algılıyor.
