@@ -2,3 +2,9 @@ Spring securityi mavende import edince post requestlerimiz için yetki hatası a
 Securiti ise passwordleri encode etmek için kullanacaktık.
 
 bir requestten sonra olumlu sonuç için message yazdırırsak client tarafında bu işlem hata döndürmüş gibi algılıyor.
+
+
+endpoint isimleri güncellenecek
+
+service fonksiyonları dönüş tipi Observable olacak. Buna göre de tüm componentler düzeltilecek.
+

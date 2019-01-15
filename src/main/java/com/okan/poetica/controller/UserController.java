@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -47,7 +48,8 @@ public class UserController {
         user.setId(uuid.toString());
         userService.createUser(user);
 
-        return new ResponseEntity<>("User is created successfully",HttpStatus.CREATED);
+        String message = "User is created successfully";
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
@@ -62,12 +64,18 @@ public class UserController {
         if(userService.getUser(id)==null){
             return new ResponseEntity<>("User is not found",HttpStatus.NOT_FOUND);
         }
-        return  new ResponseEntity<>(userService.getUser(id),HttpStatus.FOUND);
+        return  new ResponseEntity<>(userService.getUser(id),HttpStatus.OK);
     }
 
     @RequestMapping(value = "/userbylikename/{name}", method = RequestMethod.GET)
-    public ResponseEntity<Object> getUsersByName(@PathVariable String name){
-        return new ResponseEntity<>(userService.findByName(name),HttpStatus.FOUND);
+    public ResponseEntity<Object> getUsersByName(@PathVariable  String name){
+        
+        List<User> userList = userService.findByName(name);
+        if(userList.size()==0){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(userList,HttpStatus.OK);
     }
 
     @RequestMapping(value = "/userbyemail/{email}", method = RequestMethod.GET)
@@ -80,8 +88,8 @@ public class UserController {
         User savedUsed= userService.findByEmail(user.getEmail());
 
         if (savedUsed==null){
-
-            return new ResponseEntity<>("User is not updated. Because user is not exist!!",HttpStatus.NOT_FOUND);
+            String message = "User is not updated. Because user is not exist!!";
+            return new ResponseEntity<>(message,HttpStatus.NOT_FOUND);
         }
 
         else if (bindingResult.hasErrors()){
@@ -95,7 +103,8 @@ public class UserController {
         else {
             user.setId(savedUsed.getId());
             userService.updateUser(user);
-            return new ResponseEntity<>( "User is updated successfully",HttpStatus.OK);
+            String message = "User is updated successfully";
+            return new ResponseEntity<>(HttpStatus.OK);
         }
 
     }
