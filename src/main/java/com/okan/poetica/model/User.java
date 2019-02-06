@@ -1,24 +1,27 @@
 package com.okan.poetica.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class User {
+public class User implements Serializable {
 
     @Id
     private String id;
 
     @NotBlank(message = "Emalini buraya girebilir misin acaba?")
-    @Email(message = "Aaa bu geçerli bir email değel sanırım :(")
+    @Email(message = "Aaa bu geçerli bir email değil sanırım :(")
     @Column(unique = true)
     private String email;
-
 
 
     @NotBlank(message = "İsmini buraya girebilir misin acaba?")
@@ -26,7 +29,7 @@ public class User {
     private String name;
 
     @NotBlank(message = "Parolanı buraya girebilir misin acaba?")
-    @Size(min = 6,max = 25,message = "Bence daha güzel bir parola bulabilirsin")
+    @Size(min = 6, max = 500,message = "Bence daha güzel bir parola bulabilirsin")
     private String password;
 
     @Pattern(regexp = "[\\d]{2}", message = "Yaşını yanlış girmiş olabilir misin?")
@@ -35,18 +38,40 @@ public class User {
     @Pattern(regexp = "[\\d]{10}", message = "Telefon numaranı yanlış girmiş olabilir misin?")
     private String phoneNumber;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "writer")
-    private List<Content> ownContentList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "writer")
+    @OneToMany
     private List<Content> currentPageContentList;
+
+    private String role;
+
+    @NotBlank(message = "Kullanıcı adını buraya girebilir misin acaba?")
+    @Size(min = 3,max = 50,message = "Bence daha güzel bir kullanıcı ismi bulabilirsin")
+    @Column(unique = true)
+    private String username;
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public User() {
     }
 
-    public User(String id, String name, String password, String email) {
+    public User(String name, String password, String email, String username) {
         this.name = name;
         this.password = password;
         this.email = email;
+        this.username = username;
     }
 
     public String getId() {
@@ -89,12 +114,12 @@ public class User {
         this.age = age;
     }
 
-    public List<Content> getOwnContentList() {
-        return ownContentList;
+    public String getRole() {
+        return role;
     }
 
-    public void setOwnContentList(List<Content> ownContentList) {
-        this.ownContentList = ownContentList;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public List<Content> getCurrentPageContentList() {
@@ -113,14 +138,12 @@ public class User {
         return age == user.age &&
                 Objects.equals(name, user.name) &&
                 Objects.equals(password, user.password) &&
-                Objects.equals(email, user.email) &&
-                Objects.equals(ownContentList, user.ownContentList) &&
-                Objects.equals(currentPageContentList, user.currentPageContentList);
+                Objects.equals(email, user.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, password, email, age, ownContentList, currentPageContentList);
+        return Objects.hash(name, password, email, age);
     }
 
     @Override
@@ -130,8 +153,6 @@ public class User {
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", age=" + age +
-                ", ownContentList=" + ownContentList +
-                ", currentPageContentList=" + currentPageContentList +
                 '}';
     }
 }

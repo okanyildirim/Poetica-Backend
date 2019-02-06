@@ -1,24 +1,39 @@
 package com.okan.poetica.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class Content {
+public class Content implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(unique = true)
-    private String id;
+    private Long id;
     @Column
     private ContentType contentType;
+
+    @NotBlank
     @Column
     private String title;
+
+    @NotBlank
     @Column
+    @Size(max = 2000)
     private String content;
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "writer_content",foreignKey = @ForeignKey(name = "writer_fk"))
+
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    /* @JoinColumn(name = "writer_content",foreignKey = @ForeignKey(name = "writer_fk")) */
     private User writer;
+
+
     @Column
     private int likeNumber;
 
@@ -74,6 +89,13 @@ public class Content {
         this.likeNumber = likeNumber;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     @Override
     public boolean equals(Object o) {
